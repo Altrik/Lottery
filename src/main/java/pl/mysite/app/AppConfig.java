@@ -23,7 +23,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "pl.mysite")
-//@EnableJpaRepositories(basePackages = "pl.mysite.repository")
+@EnableJpaRepositories(basePackages = "pl.mysite.repository")
 @EnableTransactionManagement
 public class AppConfig extends WebMvcConfigurerAdapter {
 

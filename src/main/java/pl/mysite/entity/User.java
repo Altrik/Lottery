@@ -3,8 +3,10 @@ package pl.mysite.entity;
 import java.sql.Date;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.UniqueElements;
 
 @Entity
@@ -14,18 +16,37 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
 	@UniqueElements
-	@NotEmpty
+	@NotNull
 	private String login;
-	@NotEmpty
+	@NotNull
 	private String password;
 	@UniqueElements
-	@NotEmpty
+	@NotNull
 	private String email;
+	@NotNull
+	@CreationTimestamp
 	private Date lastLogIn;
+	@CreationTimestamp
+	@NotNull
+	private Date created;
+	@ColumnDefault("0")
 	private long points;
-	@NotEmpty
+	@NotNull
 	private boolean is_Admin;
 	
+	public User () {}
+	
+	public User(String login, String password, String email, Date lastLogIn, Date created, long points,
+			boolean is_Admin) {
+		this.login = login;
+		this.password = password;
+		this.email = email;
+		this.lastLogIn = lastLogIn;
+		this.created = created;
+		this.points = points;
+		this.is_Admin = is_Admin;
+	}
+
 	public String getLogin() {
 		return login;
 	}

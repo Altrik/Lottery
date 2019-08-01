@@ -2,6 +2,7 @@ package pl.mysite.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -23,9 +24,9 @@ public class HomeController {
 	@Autowired
 	UserRepository userRepo;
 	
-	@RequestMapping(value="/indexR")
+	@RequestMapping(value="/home")
 	public String home () {
-		return "indexC";
+		return "index";
 	}
 	
 	@RequestMapping(value="/userUIPage", method=RequestMethod.POST)
@@ -36,13 +37,14 @@ public class HomeController {
 	@RequestMapping(value="/", method=RequestMethod.GET)
 	public void login (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession sess = request.getSession();
-		if (!(sess.isNew())) {
-			if ((Boolean)sess.getAttribute("logged")==true) {
+		Boolean loggedIn = (Boolean) sess.getAttribute("logged");
+		if (loggedIn!=null) {
+			if (loggedIn==true) {
 				request.getRequestDispatcher("/userUIPage").forward(request, response); //userUI to g³owny panel u¿ytkownika, dodaæ tam checki czy jest admninem
 			}
 		}
 		//sess.setAttribute("logged", false);	
-		request.getRequestDispatcher("/indexR").forward(request, response);
+		request.getRequestDispatcher("/home").forward(request, response);
 	}
 	
 	@RequestMapping(value="/signin", method=RequestMethod.POST)
@@ -62,10 +64,21 @@ public class HomeController {
 				sess.setAttribute("logged", true);
 				request.getRequestDispatcher("/userUIPage").forward(request, response);
 			} else {
-				 request.getRequestDispatcher("/indexR").forward(request, response); //dodaæ error invalid login dynamicznie
+				 request.getRequestDispatcher("/home").forward(request, response); //dodaæ error invalid login dynamicznie
 			}
 		}
-		request.getRequestDispatcher("/indexR").forward(request, response);
+		request.getRequestDispatcher("/home").forward(request, response);
 	}
 	
+	@RequestMapping(value="/signup", method=RequestMethod.POST)
+	public void SingUp (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		User newUser = new User();
+		newUser.setLogin(request.getParameter("login"));
+		newUser.setPassword(request.getParameter("password"));
+		newUser.setEmail(request.getParameter("email"));
+		newUser.setIs_Admin(false);
+		newUser.setPoints(0);
+		userRepo.save(newUser); //Wywo³aæ walidacjê, oraz wyœwietliæ wyniki dynamicznie
+		request.getRequestDispatcher("/home").forward(request, response);
+	}
 }
